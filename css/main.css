@@ -1,0 +1,241 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.color-boxes div {
+	width: 40px;
+	height: 40px;
+
+	margin: 4px;
+
+	float: left;
+
+	border: 1px solid #000000;
+}
+
+.colorpicker-container {
+	display: none;
+}
+
+/* Start colorpicker */
+.colorpicker {	
+	padding: 6px;
+
+	float: left;
+
+	font-family: Trebuchet MS,Lucida Sans Unicode,Arial,sans-serif;
+	font-size: 12px;
+
+	background: #f9f9f9;
+	
+	border: 1px solid #999999;
+}
+	.colorpicker canvas {
+		vertical-align: bottom;
+	}
+
+	.colorpicker .palette-container {
+		margin-right: 6px;
+
+		position: relative;
+
+		float: left;
+
+		border: 1px solid #000000;
+	}
+		.colorpicker .palette-container .palette-pointer {
+			width: 13px;
+			height: 13px;
+
+			padding: 0;
+
+			position: absolute;
+
+			z-index: 10000;
+
+			background: url('../images/pointer.gif') center center no-repeat;
+		}
+
+	.colorpicker .hue-container {
+		float: left;
+
+		position: relative;
+
+		border: 1px solid #000000;
+	}
+		.colorpicker .hue-container .hue-pointer {
+			width: 13px;
+			height: 13px;
+
+			padding: 0;
+
+			position: absolute;
+
+			z-index: 10000;
+
+			background: url('../images/pointer.gif') center center no-repeat;
+		}
+
+	.colorpicker .rgb-container, .colorpicker .hex-input-container {
+		margin-top: 4px;
+
+		clear: both;
+	}
+		.colorpicker .rgb-container .rgb-input {
+			width: 26px;
+
+			margin: 2px;
+		}
+		.colorpicker .hex-container .hex-input {
+			width: 48px;
+
+			margin: 2px;
+		}
+	.colorpicker .preview-container {
+		width: 40px;
+
+		border: 1px solid #000000;
+		overflow: hidden;
+	}
+		.colorpicker .preview-container .preview-color {
+			width: 20px;
+			height: 20px;
+
+			float: left;
+		}
+		.colorpicker .preview-container .current-color {
+			width: 20px;
+			height: 20px;
+
+			float: left;
+		}
+
+	/*.colorpicker .left-container {
+		padding-right: 5px;
+		float: left;
+		border-right: 1px solid #DBDBDB;
+	}*/
+		/* Picker container */
+		/*.colorpicker .canvas-container {
+			margin-right: 5px;
+
+			position: relative;
+
+			float: left;
+
+			cursor: crosshair;
+
+			border: 1px solid #000000;
+		}*/
+		/* Hue container */
+		/*.colorpicker .hue-container {
+			margin-right: 5px;
+
+			float: left;
+
+			border: 1px solid #000000;
+		}
+		.colorpicker .pointer {
+			width: 2px;
+			height: 2px;
+			position: absolute;
+			background: #ffffff;
+			border: 1px solid #000000;
+
+					border-radius: 4px;
+			-webkit-border-radius: 4px;
+		}*/
+
+	/* Right container */
+	/*.colorpicker .right-container {
+		height: 200px;
+		padding-left: 5px;
+		float: right;
+
+		position: relative;
+
+		border-left: 1px solid #FFFFFF;
+	}*/
+
+		/* Color container */
+		/*.colorpicker .color-container {
+			overflow: hidden;
+			border: 1px solid #000000;
+		}
+			.colorpicker .color-container .preview-color {
+				width: 50%;
+				height: 30px;
+				float: left;
+			}
+			.colorpicker .color-container .current-color {
+				width: 50%;
+				height: 30px;
+				float: left;
+			}*/
+
+		/* RGB Input container */
+		/*.colorpicker .rgb-input-container {
+			margin-top: 5px;
+		}
+			.colorpicker .rgb-input-container .rgb {
+				width: 30px;
+				margin-bottom: 5px;
+			}*/
+
+		/* HEX Input container */
+		/*.colorpicker .hex-input-container .hex {
+			width: 60px;
+			margin-bottom: 5px;
+		}*/
+
+		/* Button container */
+/*		.colorpicker .button-container {
+			width: 90%;
+
+			position: absolute;
+		    bottom: 0px;
+		    left: px;
+		}
+			.colorpicker .save-color-button {
+				width: 100%;
+
+				margin-top: 3px; 
+			    padding: 2px 5px;			    
+
+				color: #fff;
+				font: 11px bold;
+
+				cursor: pointer;
+				line-height: 18px;
+
+				background: -moz-linear-gradient(#333333 20%, #666666 80%);
+
+				border: 0;
+
+						border-radius: 4px;
+				   -moz-border-radius: 4px;
+				-webkit-border-radius: 4px;
+				
+						box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset;
+				   -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset;
+				-webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset;		
+			}
+			.colorpicker button:active {
+			    background: #333333; 
+			}
+
+		.colorpicker label {
+			margin-right: 5px;
+		}
+.choose-color {
+	width: 20px;
+	height: 20px;
+}*/
+
+
+/*.colorpicker2 {
+	width: 136px;
+	height: 136px;
+	background: linear-gradient(to top, #000000, rgba(204, 154, 129, 0));
+}
