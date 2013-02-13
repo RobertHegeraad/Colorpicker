@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Color Picker</title>
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+	<div class="color-boxes"></div>
+
+	<div class="colorpicker-container"></div>
+
+
+	<!-- JavaScript -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
+	<script src="js/colorpicker.js"></script>
+
+	<script>
+
+	//Create the Colorpicker
+	Colorpicker = Object.create(Colorpicker);
+    Colorpicker.init({
+        colorpickerContainer: $('.colorpicker-container'),
+        colorBoxContainer: $('.color-boxes'),
+        colorBoxes: 1,
+    });
+	    
+	</script>
+	
+</body>
+</html>
