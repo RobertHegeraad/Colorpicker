@@ -109,6 +109,11 @@ if(typeof Object.create !== 'function') {
             },
         ],
 
+
+
+        /* ----------------------------------------------------------------------------------------------
+         * Initialize! Set the hue and palette objects, cache some vars and call some functions
+         */
         init: function(config)
         {
             var self = this;
@@ -119,10 +124,29 @@ if(typeof Object.create !== 'function') {
 
             this.createColorBoxes(this.config.colorBoxes, this.config.colorBoxContainer);
 
+
+
+            //Set the hue
+            var hue = document.getElementById('hue'),
+                context = hue.getContext('2d'),
+                pointer = $('.hue-pointer');
+
+            self.hue = {
+                canvas: hue,   
+                context: context,
+                width: hue.width,
+                height: hue.height,
+                pointer: pointer,
+                pointerPos: {
+                    x: 0,
+                    y: 0,
+                }
+            };
+
             //Set the palette
-            palette = document.getElementById('palette');
-            context = palette.getContext('2d');
-            var pointer = $('.palette-pointer');
+            var palette = document.getElementById('palette'),
+                context = palette.getContext('2d'),
+                pointer = $('.palette-pointer');
 
             self.palette = {
                 canvas: palette,
@@ -142,24 +166,9 @@ if(typeof Object.create !== 'function') {
                     },
                     hex: 'FF0000',
                 }
-            }
+            };
 
-            //Set the hue
-            hue = document.getElementById('hue');
-            context = hue.getContext('2d');
-            var pointer = $('.hue-pointer');
 
-            self.hue = {
-                canvas: hue,   
-                context: context,
-                width: hue.width,
-                height: hue.height,
-                pointer: pointer,
-                pointerPos: {
-                    x: 0,
-                    y: 0,
-                }
-            }
 
             //Cache
             self.$hue = $('canvas#hue');
@@ -177,6 +186,7 @@ if(typeof Object.create !== 'function') {
 
 
 
+            //Check what elements to show on the Colorpicker
             if(self.config.rgb !== true) { self.$rgbContainer.hide(); }
             if(self.config.hex !== true) { self.$hexContainer.hide(); }
             if(self.config.preview !== true) { self.$previewContainer.hide(); }
@@ -190,7 +200,8 @@ if(typeof Object.create !== 'function') {
             /* Events -------------------------------------------------------------------------- */
 
             /* -----------------------------------------------------------------
-             * Click on the hue
+             * Click event on the hue move the pointer to the clicked location
+             * and change the colors
              */
             self.$hue.on('click', function(e)
             {
@@ -235,7 +246,7 @@ if(typeof Object.create !== 'function') {
             });
 
             /* -----------------------------------------------------------------
-             * Mouseup on the hue
+             * Mouseup events on the hue
              */
             self.$hue.on('mouseup', function()
             {
@@ -279,7 +290,8 @@ if(typeof Object.create !== 'function') {
 
 
             /* -----------------------------------------------------------------
-             * Click on the palette
+             * Click event on the palette, move the pointer to the clicked location
+             * and change the colors
              */
             self.$palette.on('click', function(e)
             {
@@ -454,6 +466,45 @@ if(typeof Object.create !== 'function') {
 
 
             /* -----------------------------------------------------------------
+             * Keypress event on the palette to allow moving the pointer with the arrow keys
+             */
+            self.$palette.on('keypress', function(e)
+            {
+                switch(e.keyCode)
+                {
+                    //Up
+                    case 38:
+                        self.palette.pointerPos.y = (self.palette.pointerPos.y == 1) ? 1 : self.palette.pointerPos.y -= 1; 
+                    break;
+
+                    //Down
+                    case 40:
+                        self.palette.pointerPos.y = (self.palette.pointerPos.y == 200) ? 200 : self.palette.pointerPos.y += 1;
+                    break;
+
+                    //Left
+                    case 37:
+                        self.palette.pointerPos.x = (self.palette.pointerPos.x == 1) ? 1 : self.palette.pointerPos.x -= 1;
+                    break;
+
+                    //Right
+                    case 39:
+                        self.palette.pointerPos.x = (self.palette.pointerPos.x == 200) ? 200 : self.palette.pointerPos.x += 1;
+                    break;
+                }
+
+                self.palette.color = self.convertColors(self.getRgb(self.palette));
+
+                self.movePointer(self.palette);
+
+                //Change the colors and color codes of the elements                    
+                self.changeInputValues();
+                self.changePreviewColor();
+            });
+
+
+
+            /* -----------------------------------------------------------------
              * Click event on save button, change the color for the current index
              */
             $('.colorpicker .save-button').on('click', function()
@@ -462,7 +513,7 @@ if(typeof Object.create !== 'function') {
 
                 $('.color-box-' + self.index).css('backgroundColor', '#' + self.palette.color.hex);
 
-                self.config.colorpickerContainer.hide();
+                self.close();
             });
 
             /* -----------------------------------------------------------------
@@ -472,7 +523,7 @@ if(typeof Object.create !== 'function') {
             {
                 self.palette.color = self.colors[self.index];
 
-                self.config.colorpickerContainer.hide();
+                self.close();
             });
 
 
@@ -516,6 +567,20 @@ if(typeof Object.create !== 'function') {
             $('.current-color').css('backgroundColor', '#' + self.colors[self.index].hex);
 
             self.config.colorpickerContainer.show();
+
+            self.$palette.focus();
+        },
+
+        /* ----------------------------------------------------------------------------------------------
+         * Close the Colorpicker
+         */
+        close: function()
+        {
+            var self = this;
+
+            self.$palette.blur();
+
+            self.config.colorpickerContainer.hide();
         },
 
 
@@ -551,7 +616,7 @@ if(typeof Object.create !== 'function') {
 
                 //Palette
             var elements  = '<div class="palette-container">';
-                elements += '<canvas id="palette" width="200" height="200"></canvas>';
+                elements += '<canvas id="palette" width="200" height="200" tabindex="1"></canvas>';
                 elements += '<div class="palette-pointer"></div>';
                 elements += '</div>';
 
