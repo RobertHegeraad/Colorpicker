@@ -138,8 +138,8 @@ if(typeof Object.create !== 'function') {
                 height: hue.height,
                 pointer: pointer,
                 pointerPos: {
-                    x: 0,
-                    y: 0,
+                    x: 5,
+                    y: 3,
                 }
             };
 
@@ -155,8 +155,8 @@ if(typeof Object.create !== 'function') {
                 height: palette.height,
                 pointer: pointer,
                 pointerPos: {
-                    x: 10,
-                    y: 10,
+                    x: 200,
+                    y: 0,
                 },
                 color: {
                     rgb: {
@@ -211,10 +211,9 @@ if(typeof Object.create !== 'function') {
 
                 self.drawPalette();
 
-                self.movePointer(self.hue);
+                self.movePointer(self.hue, { x: 5, y: self.hue.pointerPos.y });
 
-                self.getPointerPositionByRgb(self.palette.color.rgb);
-                self.movePointer(self.palette);
+                self.movePointer(self.palette, { x: 200, y: 0 });
 
                 //Change the colors and color codes of the elements                
                 self.changeInputValues();
@@ -234,10 +233,9 @@ if(typeof Object.create !== 'function') {
 
                     self.drawPalette();
 
-                    self.movePointer(self.hue);
+                    self.movePointer(self.hue, { x: 5, y: self.hue.pointerPos.y });
 
-                    self.getPointerPositionByRgb(self.palette.color.rgb);
-                    self.movePointer(self.palette);
+                    self.movePointer(self.palette, { x: 200, y: 0 });
 
                     //Change the colors and color codes of the elements                    
                     self.changeInputValues();
@@ -407,25 +405,9 @@ if(typeof Object.create !== 'function') {
                 //Convert colors
                 self.palette.color = self.convertColors(rgb);
 
-                self.getPointerPositionByRgb(self.palette.color.rgb);
+                self.drawPalette();
 
-
-                
-                //Is the position object empty? meaning the RGB is not found on the current palette background
-                if($.isEmptyObject(self.palette.pointerPos))
-                {
-                    //Draw palette again with the RGB
-                    self.drawPalette();
-
-                    //Get position of that RGB on the palette and move the pointer to that RGB
-                    self.getPointerPositionByRgb(self.palette.color.rgb);
-                    self.movePointer(self.palette);
-                }
-                else
-                {
-                    //Move pointer to the RGB position
-                    self.movePointer(self.palette);
-                }
+                self.movePointer(self.palette, { x: 200, y: 0 });
 
                 //Change the colors and color codes of the elements
                 self.changeInputValues();
@@ -454,9 +436,7 @@ if(typeof Object.create !== 'function') {
 
                 self.drawPalette();
 
-                //Get position of the RGB on the palette, and move the pointer to that RGB position
-                self.getPointerPositionByRgb(self.palette.color.rgb);
-                self.movePointer(self.palette);
+                self.movePointer(self.palette, { x: 200, y: 0 });
 
                 //Change the colors and color codes of the elements                
                 self.changeInputValues();
@@ -557,10 +537,9 @@ if(typeof Object.create !== 'function') {
 
             self.drawPalette();
 
-            self.getPointerPositionByRgb(self.palette.color.rgb);
             self.movePointer(self.palette);
 
-            self.movePointer(self.hue);
+            self.movePointer(self.hue, { x: 5, y: 3 });
 
             self.changeInputValues();
             self.changePreviewColor();            
@@ -570,6 +549,8 @@ if(typeof Object.create !== 'function') {
 
             self.$palette.focus();
         },
+
+
 
         /* ----------------------------------------------------------------------------------------------
          * Close the Colorpicker
@@ -584,8 +565,12 @@ if(typeof Object.create !== 'function') {
         },
 
 
+
         /* ----------------------------------------------------------------------------------------------
-         * Create ´color boxes´ that hold the index for a box it´s color, 
+         * Create ´color boxes´ that hold the index for a box it´s color
+         *
+         * @param  amount     object   The number of color boxes to create
+         * @param  container  element  The color boxes container element passed in the config object to the init() function
          */
         createColorBoxes: function(amount, container)
         {
@@ -607,6 +592,8 @@ if(typeof Object.create !== 'function') {
 
         /* ----------------------------------------------------------------------------------------------
          * Create the elements for the Colorpicker
+         *
+         * @param  container  element  The Colorpicker container element passed in the config object to the init() function
          */
         createColorpicker: function(container)
         {
@@ -736,6 +723,8 @@ if(typeof Object.create !== 'function') {
 
         /* ----------------------------------------------------------------------------------------------
          * Get the RGB value from the current cursor position on the palette or hue
+         *
+         * @param  obj  object  The object to get the RGB from
          */
         getRgb: function(obj)
         {
@@ -752,6 +741,9 @@ if(typeof Object.create !== 'function') {
 
         /* ----------------------------------------------------------------------------------------------
          * Get the current position of the cursor on the palette or hue
+         *
+         * @param  obj  object  The object to get the Pointer position from
+         * @param  e    object  The event object
          */
         getPointerPosition: function(obj, e)
         {
@@ -763,10 +755,10 @@ if(typeof Object.create !== 'function') {
 
             //Limit position of the pointer
             if(x < 1)   { x = 1; }
-            if(x > 200) { x = 200; }
+            if(x > obj.width) { x = obj.width; }
 
             if(y < 1)   { y = 1; }
-            if(y > 200) { y = 200; }
+            if(y > obj.height) { y = obj.height; }
 
             return {
                 x: x,
@@ -777,51 +769,9 @@ if(typeof Object.create !== 'function') {
 
 
         /* ----------------------------------------------------------------------------------------------
-         * Get the current position of the cursor on the palette or hue by a RGB value
-         */
-        getPointerPositionByRgb: function(rgb)
-        {
-            var self = this;
-
-            console.log('move');
-
-            //Get the RGB for every pixel
-            var data = self.palette.context.getImageData(0, 0, self.palette.width, self.palette.height).data;
-
-            var coords = {
-
-            };
-
-            i = 0;
-
-            //Loop through all the pixels
-            yloop:
-            for(var y=0; y<self.palette.height; y++)
-            {
-                xloop:
-                for(var x=0; x<self.palette.width; x++)
-                {
-                    if(data[i] == rgb[0] && data[i+1] == rgb[1] && data[i+2] == rgb[2])
-                    {
-                        coords = {
-                            x: x,
-                            y: y,
-                        }
-
-                        break yloop;
-                    }
-
-                    i += 4;
-                }
-            }
-
-            self.palette.pointerPos = coords;
-        },
-
-
-
-        /* ----------------------------------------------------------------------------------------------
          * Convert RGB to HEX or HEX to RGB
+         *
+         * @param  value  string/object  Either a RGB object or a HEX string
          */
         convertColors: function(value)
         {
@@ -893,14 +843,19 @@ if(typeof Object.create !== 'function') {
 
         /* ----------------------------------------------------------------------------------------------
          * Move the pointer
+         *
+         * @param  obj  object  The object containing the Pointer element and the position coords
+         * @param  pos  object  An object containing x, y coordinates that will override the obj coords
          */
-        movePointer: function(obj)
+        movePointer: function(obj, pos)
         {
             var self = this;
 
+            var pos = pos || obj.pointerPos;
+
             obj.pointer.css({
-                left: obj.pointerPos.x - 6,
-                top: obj.pointerPos.y - 6,
+                left: pos.x - 6,
+                top: pos.y - 6,
             });
         },
     };    
