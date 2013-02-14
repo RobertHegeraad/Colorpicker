@@ -205,6 +205,8 @@ if(typeof Object.create !== 'function') {
              */
             self.$hue.on('click', function(e)
             {
+                self.$hue.focus();
+
                 self.hue.pointerPos = self.getPointerPosition(self.hue, e);
 
                 self.palette.color = self.convertColors(self.getRgb(self.hue));
@@ -293,6 +295,8 @@ if(typeof Object.create !== 'function') {
              */
             self.$palette.on('click', function(e)
             {
+                self.$palette.focus();
+
                 self.palette.pointerPos = self.getPointerPosition(self.palette, e);
 
                 self.palette.color = self.convertColors(self.getRgb(self.palette));
@@ -441,6 +445,38 @@ if(typeof Object.create !== 'function') {
                 //Change the colors and color codes of the elements                
                 self.changeInputValues();
                 self.changePreviewColor();                
+            });
+
+
+
+            /* -----------------------------------------------------------------
+             * Keypress event on the hue to allow moving the pointer with the arrow keys
+             */
+            self.$hue.on('keypress', function(e)
+            {
+                switch(e.keyCode)
+                {
+                    //Up
+                    case 38:
+                        self.hue.pointerPos.y = (self.hue.pointerPos.y == 1) ? 1 : self.hue.pointerPos.y -= 1; 
+                    break;
+
+                    //Down
+                    case 40:
+                        self.hue.pointerPos.y = (self.hue.pointerPos.y == 200) ? 200 : self.hue.pointerPos.y += 1;
+                    break;
+                }
+
+                self.palette.color = self.convertColors(self.getRgb(self.hue));
+
+                self.drawPalette();
+
+                self.movePointer(self.palette, { x: 200, y: 1 });
+                self.movePointer(self.hue, { x: 5, y: self.hue.pointerPos.y });                
+
+                //Change the colors and color codes of the elements                    
+                self.changeInputValues();
+                self.changePreviewColor();
             });
 
 
@@ -609,7 +645,7 @@ if(typeof Object.create !== 'function') {
 
                 //Hue
                 elements += '<div class="hue-container">';
-                elements += '<canvas id="hue" width="20" height="200"></canvas>';
+                elements += '<canvas id="hue" width="20" height="200" tabindex="2"></canvas>';
                 elements += '<div class="hue-pointer"></div>';
                 elements += '</div>';
 
